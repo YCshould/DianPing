@@ -55,7 +55,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     private void init(){
         SECKILL_ORDER_EXECUTOR.submit(new VoucherOrderHandler());  //new VoucherOrderHandler()是线程提交的一个任务
     }
-/*    //阻塞队列
+    //阻塞队列
     private BlockingQueue<VoucherOrder> orderstask=new ArrayBlockingQueue<>(1024*1024);
     private class VoucherOrderHandler implements Runnable{
         @Override
@@ -71,13 +71,13 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                 }
             }
         }
-    }*/
+    }
 
     /**
      * 后期用基于stream的Xgroup的消息队列，不用在java代码中创造阻塞队列（在Jvm中会占用内存），直接在lua脚本中传递消息,先在redis中创建一个xgroup
      */
     //消息队列
-    private class VoucherOrderHandler implements Runnable{
+    /*private class VoucherOrderHandler implements Runnable{
         String queueName="stream.orders";
         @Override
         public void run() {
@@ -136,7 +136,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                 }
             }
         }
-    }
+    }*/
 
     private void handlerVoucherOrder(VoucherOrder voucherOrder) {
         Long userId = voucherOrder.getId();
@@ -175,7 +175,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
      */
     //用rua脚本实现
     ////////////////////////////////////////////注意:在程序运行前先将redis中的库存(string)和用户id(set)先配置好
-    /*@Override
+    @Override
     public Result seckillVoucher(Long voucherId) {
 
         //1.查询秒杀券
@@ -214,16 +214,16 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         proxy = (IVoucherOrderService) AopContext.currentProxy();
         //返回订单id
         return Result.ok(nextid);
-    }*/
+    }
 
 
     /**
      * 主线程，Stream消息队列实现
-     * @param voucherId
+     * @param
      * @return
      */
     @Override
-    public Result seckillVoucher(Long voucherId) {
+    /*public Result seckillVoucher(Long voucherId) {
 
         //1.查询秒杀券
         SeckillVoucher seckillVoucher = iSeckillVoucherService.getById(voucherId);
@@ -255,8 +255,9 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         proxy = (IVoucherOrderService) AopContext.currentProxy();
         //返回订单id
         return Result.ok(orderid);
-    }
+    }*/
 
+    //最原始的分布式锁
     /*public Result seckillVoucher(Long voucherId) {
         //1.查询秒杀券
         SeckillVoucher seckillVoucher = iSeckillVoucherService.getById(voucherId);
